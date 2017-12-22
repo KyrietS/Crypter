@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CryptoEngine.cpp" />
+    <ClCompile Include="src\InputParser.cpp" />
+    <ClCompile Include="src\Interface.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>

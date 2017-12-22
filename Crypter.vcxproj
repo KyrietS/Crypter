@@ -21,6 +21,12 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\CryptoEngine.h" />
+    <ClInclude Include="src\File.h" />
+    <ClInclude Include="src\InputParser.h" />
+    <ClInclude Include="src\Interface.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{BC9CFFC2-23F8-49B4-8151-EF035B88BB71}</ProjectGuid>

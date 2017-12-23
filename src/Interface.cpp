@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <limits>
 
 using namespace std;
 
@@ -68,10 +69,10 @@ void Interface::analyzeProgramArgs( int argc, char ** argv )
 		paths.push_back( argv[ i ] );
 	}
 	cout << "PASSWORD: ";
-	cin >> password;
+	getline( cin, password );
 	crypter->autoCryption( password, paths );
 	cout << "Press ENTER to exit...";
-	cin.get();
+	getline( cin, string() );
 }
 
 Interface::Interface( CryptoEngine * _crypter, InputParser * _parser )

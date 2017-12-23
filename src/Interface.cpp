@@ -16,7 +16,7 @@ int Interface::readCommand()
 
 	// NIEPOPRAWNA SK£ADNIA POLECENIA
 	if( args.size() == 0 )
-		printHelp();
+		printHelp( HELP );
 	// ENCRYPT
 	else if( args.size() >= 3 && args[ 0 ] == "encrypt" )
 		crypter->encryptFiles( args[ 1 ], vector<string>( args.cbegin()+2, args.cend() ) );
@@ -36,24 +36,24 @@ int Interface::readCommand()
 	else if( args[ 0 ] == "help" )
 	{
 		if( args.size() == 1 )
-			printHelp();
+			printHelp( HELP );
 		else if( args[ 1 ] == "encrypt" )
-			printHelpEncrypt();
+			printHelp( HELP_ENCRYPT );
 		else if( args[ 1 ] == "decrypt" )
-			printHelpDecrypt();
+			printHelp( HELP_DECRYPT );
 		else if( args[ 1 ] == "analyze" )
-			printHelpAnalyze();
+			printHelp( HELP_ANALYZE );
 		else if( args[ 1 ] == "auto" )
-			printHelpAuto();
+			printHelp( HELP_AUTO );
 		else
-			printHelp();
+			printHelp( HELP );
 	}
 	// PUSTA LINIA
 	else if( args.size() == 1 && args[ 0 ] == "" )
 		return 1;
 	// NIEZNANE POLECENIE 
 	else
-		printHelp();
+		printHelp( HELP );
 
 	cout << endl;
 	return 1; // Nie wybrano exit
@@ -86,28 +86,27 @@ void Interface::printPrompt()
 {
 	cout << "CRYPTER> ";
 }
- // TODO printHelp
-void Interface::printHelp()
-{
-	cout << "Interface::printHelp" << endl;
-}
 
-void Interface::printHelpEncrypt()
+// TODO Help
+void Interface::printHelp( HelpInfo info )
 {
-	cout << "Interface::printHelpEncrypt" << endl;
-}
-
-void Interface::printHelpDecrypt()
-{
-	cout << "Interface::printHelpDecrypt" << endl;
-}
-
-void Interface::printHelpAnalyze()
-{
-	cout << "Interface::printHelpAnalyze" << endl;
-}
-
-void Interface::printHelpAuto()
-{
-	cout << "Interface::printHelpAuto" << endl;
+	switch( info )
+	{
+	case HELP_ENCRYPT:
+		cout << "ENCRYPT_HELP" << endl;
+		break;
+	case HELP_DECRYPT:
+		cout << "DECRYPT_HELP" << endl;
+		break;
+	case HELP_ANALYZE:
+		cout << "ANALYZE_HELP" << endl;
+		break;
+	case HELP_AUTO:
+		cout << "AUTO_HELP" << endl;
+		break;
+	default:
+	case HELP:
+		cout << "HELP" << endl;
+		break;
+	}
 }

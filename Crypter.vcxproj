@@ -25,8 +25,8 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Command.h" />
     <ClInclude Include="src\CryptoEngine.h" />
-    <ClInclude Include="src\File.h" />
     <ClInclude Include="src\InputParser.h" />
     <ClInclude Include="src\Interface.h" />
   </ItemGroup>

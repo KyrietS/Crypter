@@ -1,13 +1,16 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "Command.h"
 
 // TODO rozwijanie regex
 class InputParser
 {
 public:
-	// Funkcja rozbija polecenie na pojedyncze elementy.
-	// Jeœli sk³adnia jest niepoprawna, to zwraca pusty wektor
-	// Jeœli wprowadzono same znaki bia³e, to zwraca wektor pustym elementem.
-	std::vector< std::string > parse( std::string& command );
+	// Funkcja parsuje polecenie. Jeœli sk³adnia jest niepoprawna, to
+    // zwraca Command::name = "help". Jeœli input by³ pustym wierszem, to
+    // zwraca Command::name = "".
+	 Command parse( std::string& command );
+private:
+    std::vector< std::string > split( std::string & command );
 };

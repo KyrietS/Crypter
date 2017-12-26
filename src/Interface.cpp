@@ -8,49 +8,48 @@ using namespace std;
 
 int Interface::readCommand()
 {
-	string cmd;
-	vector< string > args;
+	string input;
+    Command cmd;
 
-	getline( cin, cmd );
+	getline( cin, input );
 	cout << endl;
-	args = parser->parse( cmd );
+	cmd = parser->parse( input );
 
-	// NIEPOPRAWNA SK£ADNIA POLECENIA
-	if( args.size() == 0 )
-		printHelp( HELP );
+    
+
 	// ENCRYPT
-	else if( args.size() >= 3 && args[ 0 ] == "encrypt" )
-		crypter->encryptFiles( args[ 1 ], vector<string>( args.cbegin()+2, args.cend() ) );
-	// DECRYPT
-	else if( args.size() >= 3 && args[ 0 ] == "decrypt" )
-		crypter->decryptFiles( args[ 1 ], vector<string>( args.cbegin() + 2, args.cend() ) );
-	// ANALYZE
-	else if( args.size() >= 3 && args[ 0 ] == "analyze" )
-		crypter->analyzeFiles( vector<string>( args.cbegin()+1, args.cend() ) );
-	// AUTO_CRYPTION
-	else if( args.size() >= 3 && args[ 0 ] == "auto" )
-		crypter->autoCryption( args[ 1 ], vector<string>( args.cbegin()+1, args.cend() ) );
+    if( cmd.values.size() >= 2 && cmd.name == "encrypt" )
+        crypter->encryptFiles( cmd );
+    //// DECRYPT
+    //else if( args.size() >= 3 && args[ 0 ] == "decrypt" )
+    //    cout << "todo call decryption" << endl;
+    //// ANALYZE
+    //else if( args.size() >= 3 && args[ 0 ] == "analyze" )
+    //    cout << "todo call analyze" << endl;
+    //// AUTO_CRYPTION
+    //else if( args.size() >= 3 && args[ 0 ] == "auto" )
+    //    cout << "todo call autoCryption" << endl;
 	// EXIT
-	else if( args[ 0 ] == "exit" )
+	else if( cmd.name == "exit" )
 		return 0;
 	// HELP
-	else if( args[ 0 ] == "help" )
+	else if( cmd.name == "help" )
 	{
-		if( args.size() == 1 )
+		if( cmd.values.size() == 0 )
 			printHelp( HELP );
-		else if( args[ 1 ] == "encrypt" )
+		else if( cmd.values[ 0 ] == "encrypt" )
 			printHelp( HELP_ENCRYPT );
-		else if( args[ 1 ] == "decrypt" )
+		else if( cmd.values[ 0 ] == "decrypt" )
 			printHelp( HELP_DECRYPT );
-		else if( args[ 1 ] == "analyze" )
+		else if( cmd.values[ 0 ] == "analyze" )
 			printHelp( HELP_ANALYZE );
-		else if( args[ 1 ] == "auto" )
+		else if( cmd.values[ 0 ] == "auto" )
 			printHelp( HELP_AUTO );
 		else
 			printHelp( HELP );
 	}
 	// PUSTA LINIA
-	else if( args.size() == 1 && args[ 0 ] == "" )
+	else if( cmd.name == "" )
 		return 1;
 	// NIEZNANE POLECENIE 
 	else
@@ -70,7 +69,12 @@ void Interface::analyzeProgramArgs( int argc, char ** argv )
 	}
 	cout << "PASSWORD: ";
 	getline( cin, password );
-	crypter->autoCryption( password, paths );
+    Command cmd;
+    cmd.values.push_back( password );
+    for( auto & x : paths )
+        cmd.values.push_back( x );
+
+	crypter->autoCryption( cmd );
 	cout << "Press ENTER to exit...";
 	getline( cin, string() );
 }

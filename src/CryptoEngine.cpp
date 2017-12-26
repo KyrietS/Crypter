@@ -54,9 +54,12 @@ void CryptoEngine::encryptFiles( Command & cmd )
 		// ------------- ENCRYPTION ------------- //
 		char byte = 0;
 		source.seekg( 0 );
+		unsigned long long j = 0;
 		while( source.get( byte ) )
 		{
+			byte = byte ^ key[ j % key.size() ]; 	// szyfrowanie bajta
 			dest.put( byte );
+			j++;
 		}
 		// --------------------------------------- //
 

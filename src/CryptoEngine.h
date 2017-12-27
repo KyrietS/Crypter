@@ -25,4 +25,6 @@ private:
     Header readHeader( std::ifstream & file );
 	void writeHeader( Header header, std::ofstream & file );
 	unsigned long long calculateChecksum( std::ifstream & file );
+	std::string getFileName( std::string & path );
+	bool signatureVerified( std::string signature );
 };

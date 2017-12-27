@@ -1,6 +1,7 @@
 #pragma once
 #include "CryptoEngine.h"
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -154,6 +155,42 @@ void CryptoEngine::decryptFiles( Command & cmd )
 	}
 }
 
+void CryptoEngine::analyzeFiles( Command & cmd )
+{
+	for( int i = 0; i < cmd.values.size(); i++ )
+	{
+		// Zapisz obecne flagi strumienia
+		ios::fmtflags flags( cout.flags() );
+		if( i > 0 )
+			cout << endl;
+		cout << "File \"" << cmd.values[ i ] << "\":" << endl << endl;
+		ifstream file( cmd.values[ i ] );
+		if( !file.good() )
+		{
+			cout << "  " << left << setw( 10 ) << "Error"
+				<< ": can't open the file" << endl;
+			continue;
+		}
+		cout << left;
+		cout << setfill( '.' );
+		cout << "  " << setw( 10 ) << "Name"
+			<< ": " << getFileName( cmd.values[ i ] ) << endl;
+		Header header = readHeader( file );
+		if( signatureVerified( header.signature ) )
+		{
+			cout << "  " << setw( 10 ) << "Encrypted" << ": yes" << endl;
+			cout << "  " << setw( 10 ) << "Checksum" << ": "
+				<< hex << uppercase << header.checksum.to_ullong() << endl;
+		}
+		else
+			cout << "  " << setw( 10 ) << "Encrypted" << ": no" << endl;
+		
+
+		// Przywróæ pierowtne flagi strumienia
+		cout.flags( flags );
+	}
+}
+
 void CryptoEngine::autoCryption( Command & cmd )
 {
     string key = cmd.values[ 0 ];
@@ -247,4 +284,33 @@ unsigned long long CryptoEngine::calculateChecksum( ifstream & file )
 	file.seekg( 0 );
 
 	return checksum;
+}
+
+string CryptoEngine::getFileName( string & path )
+{
+	size_t pos1 = path.rfind( '\\' );
+	size_t pos2 = path.rfind( '/' );
+	size_t pos;
+	if( pos1 == string::npos )
+		pos = pos2;
+	else if( pos2 == string::npos )
+		pos = pos1;
+	else if( pos1 > pos2 )
+		pos = pos1;
+	else
+		pos = pos2;
+
+	if( pos == string::npos )
+		return path;
+
+	string name = string( path.begin() + pos + 1, path.end() );
+	return name;
+}
+
+bool CryptoEngine::signatureVerified( string signature )
+{
+	if( signature == string( "CRYPTER\0", 8 ) )
+		return true;
+	else
+		return false;
 }

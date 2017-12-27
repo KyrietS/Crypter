@@ -44,11 +44,12 @@ void CryptoEngine::encryptFiles( Command & cmd )
 
 		header.signature = string( "CRYPTER\0", 8 );
 		header.checksum = calculateChecksum( source );
-		if( header.checksum == 0 )
+		if( header.checksum == 0uLL )
 		{
 			cout << "Error:    can't calculate checksum in file: \"" << cmd.values[ i ] << "\"" << endl;
 			continue;
 		}
+
 		writeHeader( header, dest );
 
 		// ------------- ENCRYPTION ------------- //
@@ -67,6 +68,90 @@ void CryptoEngine::encryptFiles( Command & cmd )
 		dest.close();
 		cout << "Encrypted file: " << cmd.values[ i ] + extension << endl;
     }
+}
+
+void CryptoEngine::decryptFiles( Command & cmd )
+{
+	// Nie ma przynajmniej 2 argumentów: has³o + plik
+	if( cmd.values.size() < 2 )
+		return;
+
+	ifstream source;
+	ofstream dest;
+	string key = cmd.values[ 0 ];
+	unsigned long long checksum = 0uLL;
+	string extension = ".encrypted";
+	for( unsigned int i = 1; i < cmd.values.size(); i++ )
+	{
+		// ------------- OPENING FILES ------------- //
+		source.clear();
+		if( source.is_open() )
+			source.close();
+		source.open( cmd.values[ i ], ios::binary );
+		if( !source.good() )
+		{
+			cout << "Error:\tcan't open file \"" << cmd.values[ i ] << "\"" << endl;
+			continue;
+		}
+		dest.clear();
+		if( dest.is_open() )
+			dest.close();
+		string destPath = cmd.values[ i ];
+		if( destPath.rfind( extension ) + extension.size() == destPath.size() )
+			destPath = string( destPath.begin(), destPath.end() - extension.size() );
+		dest.open( destPath, ios::binary );
+		if( !dest.good() )
+		{
+			cout << "Error:    can't create file \"" << destPath << "\"" << endl;
+			continue;
+		}
+		// ------------- HEADER ------------- //
+		Header header = readHeader( source );
+		if( header.signature == string( "CRYPTER\0", 8 ) && header.checksum != 0uLL )
+		{
+			checksum = header.checksum.to_ullong();
+			source.seekg( 16, ios::beg );
+		}
+		else
+		{
+			cout << "Warning:  file does not seem to be encrypted";
+			source.seekg( 0 );
+		}
+
+		// ------------- DECRYPTION ------------- //
+		char byte = 0;
+		unsigned long long j = 0;
+		while( source.get( byte ) )
+		{
+			byte = byte ^ key[ j % key.size() ]; 	// szyfrowanie bajta
+			dest.put( byte );
+			j++;
+		}
+		source.close();
+		dest.close();
+		// ------ POPRAWNOŒÆ DESZYFRACJI ------- //
+		if( checksum != 0uLL )
+		{
+			ifstream decryptedFile( destPath, ios::binary );
+			if( decryptedFile.good() )
+			{
+				unsigned long long decryptedFileChecksum = calculateChecksum( decryptedFile );
+				if( checksum == decryptedFileChecksum )
+					cout << "Decryption correct: " << destPath << endl;
+				else
+				{
+					cout << "Error:    decryption incorrect: " << destPath << endl;
+				}
+			}
+			else
+				cout << "Decrypred file: " << destPath << endl;
+			decryptedFile.close();
+		}
+		else
+		{
+			cout << "Decrypted file: " << destPath << endl;
+		}
+	}
 }
 
 void CryptoEngine::autoCryption( Command & cmd )
@@ -102,8 +187,8 @@ CryptoEngine::Header CryptoEngine::readHeader( ifstream & file )
 
     header.signature = string( signature, 8 );
 
-    char c_checksum[ 8 ];
-    file.read( c_checksum, 8 );
+    unsigned char c_checksum[ 8 ];
+    file.read( (char*)c_checksum, 8 );
 
     if( !file.good() )  // Wyst¹pi³ b³¹d, np. koniec pliku
     {
@@ -115,8 +200,8 @@ CryptoEngine::Header CryptoEngine::readHeader( ifstream & file )
 	// parsowanie bajtów z tablicy c_checksum na liczbê long long
     unsigned long long checksum = 0;
     for( int i = 0; i <= 6; i++ )
-        checksum = (checksum | c_checksum[ i ]) << 8;
-    checksum = (checksum | c_checksum[ 7 ]);
+        checksum = (checksum | (unsigned char)c_checksum[ i ]) << 8;
+    checksum = (checksum | (unsigned char)c_checksum[ 7 ]);
 
 	// Niejawna konwersja z long long do bitset<64>
 	// rozbija liczbê long long na pojedyncze bity.

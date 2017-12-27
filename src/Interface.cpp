@@ -18,11 +18,11 @@ int Interface::readCommand()
     
 
 	// ENCRYPT
-    if( cmd.values.size() >= 2 && cmd.name == "encrypt" )
-        crypter->encryptFiles( cmd );
-    //// DECRYPT
-    //else if( args.size() >= 3 && args[ 0 ] == "decrypt" )
-    //    cout << "todo call decryption" << endl;
+	if( cmd.values.size() >= 2 && cmd.name == "encrypt" )
+		crypter->encryptFiles( cmd );
+	// DECRYPT
+	else if( cmd.values.size() >= 2 && cmd.name == "decrypt" )
+		crypter->decryptFiles( cmd );
     //// ANALYZE
     //else if( args.size() >= 3 && args[ 0 ] == "analyze" )
     //    cout << "todo call analyze" << endl;

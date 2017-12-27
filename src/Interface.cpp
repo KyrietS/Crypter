@@ -23,9 +23,9 @@ int Interface::readCommand()
 	// DECRYPT
 	else if( cmd.values.size() >= 2 && cmd.name == "decrypt" )
 		crypter->decryptFiles( cmd );
-    //// ANALYZE
-    //else if( args.size() >= 3 && args[ 0 ] == "analyze" )
-    //    cout << "todo call analyze" << endl;
+	// ANALYZE
+	else if( cmd.values.size() >= 1 && cmd.name == "analyze" )
+		crypter->analyzeFiles( cmd );
     //// AUTO_CRYPTION
     //else if( args.size() >= 3 && args[ 0 ] == "auto" )
     //    cout << "todo call autoCryption" << endl;

@@ -2,6 +2,7 @@
 #include "CryptoEngine.h"
 #include <iostream>
 #include <iomanip>
+#include <cstdio>
 
 using namespace std;
 
@@ -18,22 +19,24 @@ void CryptoEngine::encryptFiles( Command & cmd )
     for( unsigned int i = 1; i < cmd.values.size(); i++ )
     {
 		// ------------- OPENING FILES ------------- //
+		string sourcePath = cmd.values[ i ];
 		source.clear();
 		if( source.is_open() )
 			source.close();
-        source.open( cmd.values[ i ], ios::binary );
+        source.open( sourcePath, ios::binary );
         if( !source.good() )
         {
-            cout << "Error:\tcan't open file \"" << cmd.values[ i ] << "\"" << endl;
+            cout << "Error:\tcan't open file \"" << sourcePath << "\"" << endl;
             continue;
         }
+		string destPath = sourcePath + extension;
 		dest.clear();
 		if( dest.is_open() )
 			dest.close();
-        dest.open( cmd.values[ i ] + extension, ios::binary );
+        dest.open( destPath, ios::binary );
         if( !dest.good() )
         {
-            cout << "Error:    can't create file \"" << cmd.values[ i ] + extension << "\"" << endl;
+            cout << "Error:    can't create file \"" << destPath << "\"" << endl;
             continue;
         }
 		// ------------- HEADER ------------- //
@@ -47,7 +50,7 @@ void CryptoEngine::encryptFiles( Command & cmd )
 		header.checksum = calculateChecksum( source );
 		if( header.checksum == 0uLL )
 		{
-			cout << "Error:    can't calculate checksum in file: \"" << cmd.values[ i ] << "\"" << endl;
+			cout << "Error:    can't calculate checksum in file: \"" << sourcePath << "\"" << endl;
 			continue;
 		}
 
@@ -67,7 +70,8 @@ void CryptoEngine::encryptFiles( Command & cmd )
 
 		source.close();
 		dest.close();
-		cout << "Encrypted file: " << cmd.values[ i ] + extension << endl;
+		remove( sourcePath.c_str() );
+		cout << "Encrypted file: " << destPath << endl;
     }
 }
 
@@ -85,18 +89,20 @@ void CryptoEngine::decryptFiles( Command & cmd )
 	for( unsigned int i = 1; i < cmd.values.size(); i++ )
 	{
 		// ------------- OPENING FILES ------------- //
+		string sourcePath = cmd.values[ i ];
 		source.clear();
 		if( source.is_open() )
 			source.close();
-		source.open( cmd.values[ i ], ios::binary );
+		source.open( sourcePath, ios::binary );
 		if( !source.good() )
 		{
-			cout << "Error:\tcan't open file \"" << cmd.values[ i ] << "\"" << endl;
+			cout << "Error:\tcan't open file \"" << sourcePath << "\"" << endl;
 			continue;
 		}
 		dest.clear();
 		if( dest.is_open() )
 			dest.close();
+		// Usuwanie rozszerzenia extension z nazwy pliku (jeœli istnieje)
 		string destPath = cmd.values[ i ];
 		if( destPath.rfind( extension ) + extension.size() == destPath.size() )
 			destPath = string( destPath.begin(), destPath.end() - extension.size() );
@@ -138,10 +144,15 @@ void CryptoEngine::decryptFiles( Command & cmd )
 			{
 				unsigned long long decryptedFileChecksum = calculateChecksum( decryptedFile );
 				if( checksum == decryptedFileChecksum )
+				{
 					cout << "Decryption correct: " << destPath << endl;
+					remove( sourcePath.c_str() );
+				}
 				else
 				{
 					cout << "Error:    decryption incorrect: " << destPath << endl;
+					decryptedFile.close();
+					remove( destPath.c_str() );
 				}
 			}
 			else
@@ -205,6 +216,7 @@ void CryptoEngine::autoCryption( Command & cmd )
 			continue;
 		}
 		Header header = readHeader( file );
+		file.close();
 		if( signatureVerified( header.signature ) )
 		{
 			Command tempCmd;

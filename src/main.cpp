@@ -10,18 +10,17 @@ int main( int argc, char ** argv )
 	InputParser parser;
 	Interface interface( &cryptoEngine, &parser );
 
+	interface.printProgramInfo();
 	if( argc > 1 )
 	{
 		interface.analyzeProgramArgs( argc - 1, argv + 1 );
 	}
-	else
+
+	do
 	{
-		interface.printProgramInfo();
-		do
-		{
-			interface.printPrompt();
-		} while( interface.readCommand() );
-	}
+		interface.printPrompt();
+	} while( interface.readCommand() );
+
 
 	return 0;
 }

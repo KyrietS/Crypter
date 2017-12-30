@@ -26,9 +26,9 @@ int Interface::readCommand()
 	// ANALYZE
 	else if( cmd.values.size() >= 1 && cmd.name == "analyze" )
 		crypter->analyzeFiles( cmd );
-    //// AUTO_CRYPTION
-    //else if( args.size() >= 3 && args[ 0 ] == "auto" )
-    //    cout << "todo call autoCryption" << endl;
+	// AUTO_CRYPTION
+	else if( cmd.values.size() >= 2 && cmd.name == "auto" )
+		crypter->autoCryption( cmd );
 	// EXIT
 	else if( cmd.name == "exit" )
 		return 0;
@@ -61,22 +61,21 @@ int Interface::readCommand()
 
 void Interface::analyzeProgramArgs( int argc, char ** argv )
 {
-	vector< string > paths;
+	Command cmd;
+	cmd.name = "auto";
+
 	string password;
+	cout << "Enter password: ";
+	getline( cin, password );
+	cout << endl;
+	cmd.values.push_back( password );
+
 	for( int i = 0; i < argc; i++ )
 	{
-		paths.push_back( argv[ i ] );
+		cmd.values.push_back( argv[ i ] );
 	}
-	cout << "PASSWORD: ";
-	getline( cin, password );
-    Command cmd;
-    cmd.values.push_back( password );
-    for( auto & x : paths )
-        cmd.values.push_back( x );
-
 	crypter->autoCryption( cmd );
-	cout << "Press ENTER to exit...";
-	getline( cin, string() );
+	cout << endl;
 }
 
 Interface::Interface( CryptoEngine * _crypter, InputParser * _parser )

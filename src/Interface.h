@@ -13,6 +13,7 @@ public:
 	void analyzeProgramArgs( int argc, char ** argv );
 	void printProgramInfo();
 	void printPrompt();
+	void newLine();
 
 private:
 	enum HelpInfo { HELP, HELP_ENCRYPT, HELP_DECRYPT, HELP_ANALYZE, HELP_AUTO };

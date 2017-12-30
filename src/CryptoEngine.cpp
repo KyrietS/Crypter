@@ -157,10 +157,12 @@ void CryptoEngine::decryptFiles( Command & cmd )
 
 void CryptoEngine::analyzeFiles( Command & cmd )
 {
-	for( int i = 0; i < cmd.values.size(); i++ )
+	for( unsigned int i = 0; i < cmd.values.size(); i++ )
 	{
 		// Zapisz obecne flagi strumienia
 		ios::fmtflags flags( cout.flags() );
+		cout << left;
+		cout << setfill( '.' );
 		if( i > 0 )
 			cout << endl;
 		cout << "File \"" << cmd.values[ i ] << "\":" << endl << endl;
@@ -171,8 +173,7 @@ void CryptoEngine::analyzeFiles( Command & cmd )
 				<< ": can't open the file" << endl;
 			continue;
 		}
-		cout << left;
-		cout << setfill( '.' );
+		
 		cout << "  " << setw( 10 ) << "Name"
 			<< ": " << getFileName( cmd.values[ i ] ) << endl;
 		Header header = readHeader( file );
@@ -193,13 +194,37 @@ void CryptoEngine::analyzeFiles( Command & cmd )
 
 void CryptoEngine::autoCryption( Command & cmd )
 {
+	ios::fmtflags flags( cout.flags() );
     string key = cmd.values[ 0 ];
-    cout << "(de)szyfrowanie " << cmd.values.size() - 1 << " plikow haslem: " << cmd.values[ 0 ] << endl;
-    for( unsigned int i = 1; i < cmd.values.size(); i++ )
-        cout << cmd.values[ i ] << endl;
-    cout << "Parametry: " << endl;
-    for( auto & x : cmd.parameters )
-        cout << x << endl;
+	for( unsigned int i = 1; i < cmd.values.size(); i++ )
+	{
+		ifstream file( cmd.values[ i ] );
+		if( !file.good() )
+		{
+			cout << "Error:  can't open the file \"" << cmd.values[ i ] << "\"" << endl;
+			continue;
+		}
+		Header header = readHeader( file );
+		if( signatureVerified( header.signature ) )
+		{
+			Command tempCmd;
+			tempCmd.name = "decrypt";
+			tempCmd.values.push_back( key );
+			tempCmd.values.push_back( cmd.values[ i ] );
+			decryptFiles( tempCmd );
+		}
+		else
+		{
+			Command tempCmd;
+			tempCmd.name = "encrypt";
+			tempCmd.values.push_back( key );
+			tempCmd.values.push_back( cmd.values[ i ] );
+			encryptFiles( tempCmd );
+		}
+			
+	}
+	// Przywróæ pierowtne flagi strumienia
+	cout.flags( flags );
 }
 
 CryptoEngine::Header CryptoEngine::readHeader( ifstream & file )

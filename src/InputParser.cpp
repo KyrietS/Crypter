@@ -16,7 +16,7 @@ Command InputParser::parse( string& cmd )
         return command;
 
     command.name = splittedCommand[ 0 ];
-    for( int i = 1; i < splittedCommand.size(); i++ )
+    for( unsigned int i = 1; i < splittedCommand.size(); i++ )
     {
         if( splittedCommand[ i ][ 0 ] == '-' )
             command.parameters.push_back( splittedCommand[ i ] );

@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include <limits>
 
 using namespace std;
@@ -94,23 +95,62 @@ void Interface::printPrompt()
 // TODO Help
 void Interface::printHelp( HelpInfo info )
 {
+	const int MARGIN = 12;
+	cout << left;
 	switch( info )
 	{
 	case HELP_ENCRYPT:
-		cout << "ENCRYPT_HELP" << endl;
+		cout << "Encrypts files with a specified password." << endl << endl;
+		cout << "ENCRYPT password files" << endl << endl;
+		cout << setw( MARGIN ) << "  password";
+		cout << " - Password to encrypt files with." << endl;
+		cout << setw( MARGIN ) << "  files";
+		cout << " - Specifies a list of files or directories to be encrypted." << endl;
+		cout << string( MARGIN + 3, ' ' );
+		cout << "If a directory is specified, all files within the directory are encrypted." << endl;
 		break;
 	case HELP_DECRYPT:
-		cout << "DECRYPT_HELP" << endl;
+		cout << "Decrypts files with a specified password." << endl << endl;
+		cout << "DECRYPT password files" << endl << endl;
+		cout << setw( MARGIN ) << "  password";
+		cout << " - Password to decrypt files with." << endl;
+		cout << setw( MARGIN ) << "  files";
+		cout << " - Specifies a list of files or directories to be decrypted." << endl;
+		cout << string( MARGIN + 3, ' ' );
+		cout << "If a directory is specified, all files within the directory are decrypted." << endl;
 		break;
 	case HELP_ANALYZE:
-		cout << "ANALYZE_HELP" << endl;
+		cout << "Displays information about given files. Checks if file is encrypted." << endl << endl;
+		cout << "ANALYZE files" << endl << endl;
+		cout << setw( MARGIN ) << "  files";
+		cout << " - Specifies a list of files or directories to be analyzed." << endl;
+		cout << string( MARGIN + 3, ' ' );
+		cout << "If a directory is specified, all files within the directory are analyzed." << endl;
 		break;
 	case HELP_AUTO:
-		cout << "AUTO_HELP" << endl;
+		cout << "Decrypts if file is encrypted and encrypts if file is not encrypted." << endl << endl;
+		cout << "AUTO password files" << endl << endl;
+		cout << setw( MARGIN ) << "  password";
+		cout << " - Password to encrypt/decrypt files with." << endl;
+		cout << setw( MARGIN ) << "  files";
+		cout << " - Specifies a list of files or directories to be encrypted/decrypted." << endl;
+		cout << string( MARGIN + 3, ' ' );
+		cout << "If a directory is specified, all files within the directory are encrypted/decrypted." << endl;
 		break;
 	default:
 	case HELP:
-		cout << "HELP" << endl;
+		cout << setw( MARGIN ) << "ANALYZE";
+		cout << " - Displays information about given files. Checks if file is encrypted." << endl;
+		cout << setw( MARGIN ) << "AUTO";
+		cout << " - Decrypts if file is encrypted and encrypts if file is not encrypted." << endl;
+		cout << setw( MARGIN ) << "DECRYPT";
+		cout << " - Decrpts files with a specified password." << endl;
+		cout << setw( MARGIN ) << "ENCRYPT";
+		cout << " - Encrypts files with a specified password." << endl;
+		cout << setw( MARGIN ) << "EXIT";
+		cout << " - Exit Crypter." << endl;
+		cout << setw( MARGIN ) << "HELP";
+		cout << " - Displays help for specified command" << endl;
 		break;
 	}
 }

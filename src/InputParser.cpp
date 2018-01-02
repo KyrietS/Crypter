@@ -1,5 +1,6 @@
 #pragma once
 #include "InputParser.h"
+#include <cctype> // tolower
 
 using namespace std;
 
@@ -15,7 +16,12 @@ Command InputParser::parse( string& cmd )
     if( splittedCommand[ 0 ] == "" )
         return command;
 
-    command.name = splittedCommand[ 0 ];
+	// tolower command name
+	for( char & x : splittedCommand[ 0 ] )
+		x = tolower( x );
+
+	command.name = splittedCommand[ 0 ];
+
     for( unsigned int i = 1; i < splittedCommand.size(); i++ )
     {
         if( splittedCommand[ i ][ 0 ] == '-' )

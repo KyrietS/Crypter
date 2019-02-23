@@ -16,6 +16,8 @@ EXIT         - Exit Crypter.
 HELP         - Displays help for specified command
 ```
 
+## Działanie
+
 Program do każdego zaszyfrowanego pliku dodaje nagłówek specyficzny dla tego programu wraz z sumą kontrolną. 
 
 Obecny algorytm sortowania opiera się na operacji XOR poszczególnych bitów z pliku i hasła. Algorytm można jednak bardzo łatwo podmienić na inny nie naruszając innych funkcjonalności programu. 

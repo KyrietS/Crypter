@@ -22,4 +22,4 @@ Program do każdego zaszyfrowanego pliku dodaje nagłówek specyficzny dla tego 
 
 Obecny algorytm sortowania opiera się na operacji XOR poszczególnych bitów z pliku i hasła. Algorytm można jednak bardzo łatwo podmienić na inny nie naruszając innych funkcjonalności programu. 
 
-Suma kontrolna jest wyliczana jako negacja sumy wszystkich bajtów z pliku (jeśli plik jest duży i suma bajtów przekroczy zakres typu `unsigned long long`, to nadal otrzymamy poprawną sumę kontrolna)
+Suma kontrolna jest wyliczana jako negacja sumy wszystkich bajtów z pliku (jeśli plik jest duży i suma bajtów przekroczy zakres typu `unsigned long long`, to nadal otrzymamy poprawną sumę kontrolną)
